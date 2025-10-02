@@ -1,6 +1,4 @@
-/**
- * reprodução de áudio e visualização interativa
- */
+
 const VisualizacaoAudio = {
   isPlaying: false,
   song: null,
