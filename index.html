@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System of a Down - Música Interativa e Visualização</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <!-- p5.js Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/addons/p5.sound.min.js"></script>
+  <!-- ScrollReveal -->
+  <script src="https://unpkg.com/scrollreveal@4.0.9/dist/scrollreveal.min.js"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="text-center">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading System of a Down...</div>
+    </div>
+  </div>
+  <!-- Accessibility Menu -->
+  <div class="accessibility-menu position-fixed top-0 end-0 m-3 z-3">
+    <button id="botao-acessibilidade" class="btn btn-warning" aria-expanded="false" aria-label="Abrir opções de acessibilidade">
+      <i class="fas fa-universal-access"></i> Acessibilidade
+    </button>
+    <div id="opcoes-acessibilidade" class="accessibility-options mt-2">
+      <button id="aumentar-fonte" class="btn btn-dark btn-sm mb-2 w-100" aria-label="Aumentar tamanho da fonte">
+        <i class="fas fa-plus"></i> Aumentar Fonte
+      </button>
+      <button id="diminuir-fonte" class="btn btn-dark btn-sm mb-2 w-100" aria-label="Diminuir tamanho da fonte">
+        <i class="fas fa-minus"></i> Diminuir Fonte
+      </button>
+      <button id="alterna-contraste" class="btn btn-dark btn-sm w-100" aria-label="Alternar alto contraste">
+        <i class="fas fa-adjust"></i> Alto Contraste
+      </button>
+    </div>
+  </div>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand metal-font" href="#inicio">
+        <i class="fas fa-music text-danger"></i> System of a Down
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#inicio">Início</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#banda">A Banda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#albums">Álbuns</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#visualizacao">Visualização</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contato">Contato</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Hero Section -->
+  <section id="inicio" class="hero-section d-flex align-items-center">
+    <div class="container text-center">
+      <h1 class="display-1 metal-font text-danger mb-4">System of a Down</h1>
+      <p class="lead text-light mb-4">
+        Experiência interativa de música metal com visualização de áudio em tempo real
+      </p>
+      <div class="hero-buttons">
+        <button id="play-pause" class="btn btn-danger btn-lg me-3" aria-label="Tocar a música interativa" aria-pressed="false">
+          <i class="fas fa-play"></i> Tocar Música
+        </button>
+        <a href="#visualizacao" class="btn btn-outline-light btn-lg">
+          <i class="fas fa-eye"></i> Ver Visualização
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- Audio Visualization -->
+  <section id="visualizacao" class="py-5 bg-dark">
+    <div class="container text-center">
+      <h2 class="metal-font text-danger mb-4">Visualização de Áudio</h2>
+      <p class="text-light mb-4">Veja a música ganhar vida com nossa visualização interativa</p>
+      <div id="canvas-container" class="d-flex justify-content-center mb-4"></div>
+      <div class="audio-controls">
+        <button id="toggle-fullscreen" class="btn btn-outline-danger me-2">
+          <i class="fas fa-expand"></i> Tela Cheia
+        </button>
+        <button id="change-visualization" class="btn btn-outline-warning">
+          <i class="fas fa-palette"></i> Mudar Estilo
+        </button>
+      </div>
+    </div>
+  </section>
+  <!-- Band Information -->
+  <section id="banda" class="py-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h2 class="metal-font text-danger mb-4">Sobre a Banda</h2>
+          <p class="text-light lead">
+            System of a Down é uma banda americana de metal alternativo formada em 1994 em Glendale, Califórnia.
+          </p>
+          <p class="text-light">
+            Conhecidos por suas letras politicamente carregadas e som único que combina elementos de metal, punk, 
+            música folclórica armênia e música experimental, a banda se tornou uma das mais influentes do metal moderno.
+          </p>
+          <div class="quote-box mb-4">
+            <blockquote class="text-center text-warning">
+              <i class="fas fa-quote-left"></i>
+              "Wake up! Grab a brush and put a little makeup!"
+              <footer class="text-muted mt-2">- Chop Suey!</footer>
+            </blockquote>
+          </div>
+          <ul class="list-unstyled text-light">
+            <li><i class="fas fa-microphone text-danger me-2"></i> <strong>Serj Tankian</strong> - Vocal</li>
+            <li><i class="fas fa-guitar text-danger me-2"></i> <strong>Daron Malakian</strong> - Guitarra, Vocal</li>
+            <li><i class="fas fa-guitar text-danger me-2"></i> <strong>Shavo Odadjian</strong> - Baixo</li>
+            <li><i class="fas fa-drum text-danger me-2"></i> <strong>John Dolmayan</strong> - Bateria</li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <div class="band-stats">
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="stat-card">
+                  <h3 class="text-danger">40M+</h3>
+                  <p class="text-light">Álbuns Vendidos</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-card">
+                  <h3 class="text-danger">5</h3>
+                  <p class="text-light">Álbuns de Estúdio</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-card">
+                  <h3 class="text-danger">1994</h3>
+                  <p class="text-light">Fundada</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Albums Section -->
+  <section id="albums" class="py-5 bg-dark">
+    <div class="container">
+      <h2 class="text-center metal-font text-danger mb-5">Discografia</h2>
+      <div class="row">
+        <!-- Album 1 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="album-card">
+            <div class="album-cover">
+              <i class="fas fa-compact-disc fa-5x text-danger"></i>
+            </div>
+            <h4 class="text-danger mt-3">System of a Down (1998)</h4>
+            <button class="btn btn-outline-light btn-sm album-toggle" data-target="album1-tracks">
+              <i class="fas fa-list"></i> Ver Faixas
+            </button>
+            <ul id="album1-tracks" class="track-list mt-3">
+              <li>Suite-Pee</li>
+              <li>Know</li>
+              <li>Sugar</li>
+              <li>Suggestions</li>
+              <li>Spiders</li>
+              <li>DDevil</li>
+              <li>Soil</li>
+              <li>War?</li>
+              <li>Mind</li>
+              <li>Peephole</li>
+              <li>CUBErt</li>
+              <li>Darts</li>
+              <li>P.L.U.C.K.</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Album 2 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="album-card">
+            <div class="album-cover">
+              <i class="fas fa-compact-disc fa-5x text-danger"></i>
+            </div>
+            <h4 class="text-danger mt-3">Toxicity (2001)</h4>
+            <p class="text-muted">"The most successful album"</p>
+            <button class="btn btn-outline-light btn-sm album-toggle" data-target="album2-tracks">
+              <i class="fas fa-list"></i> Ver Faixas
+            </button>
+            <ul id="album2-tracks" class="track-list mt-3">
+              <li>Prison Song</li>
+              <li>Needles</li>
+              <li>Psycho</li>
+              <li>Aerials</li>
+              <li>Toxicity</li>
+              <li>Sugar</li>
+              <li>Chop Suey!</li>
+              <li>Spiders</li>
+              <li>DDevil</li>
+              <li>Soil</li>
+              <li>War?</li>
+              <li>Suite-Pee</li>
+              <li>Know</li>
+              <li>Suggestions</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Album 3 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="album-card">
+            <div class="album-cover">
+              <i class="fas fa-compact-disc fa-5x text-danger"></i>
+            </div>
+            <h4 class="text-danger mt-3">Mezmerize (2005)</h4>
+            <p class="text-muted">"Political awakening"</p>
+            <button class="btn btn-outline-light btn-sm album-toggle" data-target="album3-tracks">
+              <i class="fas fa-list"></i> Ver Faixas
+            </button>
+            <ul id="album3-tracks" class="track-list mt-3">
+              <li>Soldier Side - Intro</li>
+              <li>B.Y.O.B.</li>
+              <li>Revenga</li>
+              <li>Cigaro</li>
+              <li>Radio/Video</li>
+              <li>This Cocaine Makes Me Feel Like I'm On This Song</li>
+              <li>Violent Pornography</li>
+              <li>Question!</li>
+              <li>Sad Statue</li>
+              <li>Old School Hollywood</li>
+              <li>Lost in Hollywood</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Album 4 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="album-card">
+            <div class="album-cover">
+              <i class="fas fa-compact-disc fa-5x text-danger"></i>
+            </div>
+            <h4 class="text-danger mt-3">Hypnotize (2005)</h4>
+            <p class="text-muted">"Companion to Mezmerize"</p>
+            <button class="btn btn-outline-light btn-sm album-toggle" data-target="album4-tracks">
+              <i class="fas fa-list"></i> Ver Faixas
+            </button>
+            <ul id="album4-tracks" class="track-list mt-3">
+              <li>Attack</li>
+              <li>Dreaming</li>
+              <li>Kill Rock 'N Roll</li>
+              <li>Hypnotize</li>
+              <li>Stealing Society</li>
+              <li>Tentative</li>
+              <li>U-Fig</li>
+              <li>Holy Mountains</li>
+              <li>Vicinity of Obscenity</li>
+              <li>She's Like Heroin</li>
+              <li>Lonely Day</li>
+              <li>Soldier Side</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Album 5 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="album-card">
+            <div class="album-cover">
+              <i class="fas fa-compact-disc fa-5x text-danger"></i>
+            </div>
+            <h4 class="text-danger mt-3">Steal This Album! (2002)</h4>
+            <p class="text-muted">"Rare tracks collection"</p>
+            <button class="btn btn-outline-light btn-sm album-toggle" data-target="album5-tracks">
+              <i class="fas fa-list"></i> Ver Faixas
+            </button>
+            <ul id="album5-tracks" class="track-list mt-3">
+              <li>Chic 'N' Stu</li>
+              <li>Innervision</li>
+              <li>I-E-A-I-A-I-O</li>
+              <li>36</li>
+              <li>Pictures</li>
+              <li>Highway Song</li>
+              <li>Fuck the System</li>
+              <li>Ego Brain</li>
+              <li>Thetawaves</li>
+              <li>Roulette</li>
+              <li>Streamline</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Contact Section -->
+  <section id="contato" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="text-center metal-font text-danger mb-5">Entre em Contato</h2>
+          <form class="contact-form">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nome" class="form-label text-light">Nome</label>
+                <input type="text" class="form-control bg-dark text-light border-secondary" id="nome" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label text-light">Email</label>
+                <input type="email" class="form-control bg-dark text-light border-secondary" id="email" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="assunto" class="form-label text-light">Assunto</label>
+              <input type="text" class="form-control bg-dark text-light border-secondary" id="assunto" required>
+            </div>
+            <div class="mb-3">
+              <label for="mensagem" class="form-label text-light">Mensagem</label>
+              <textarea class="form-control bg-dark text-light border-secondary" id="mensagem" rows="5" required></textarea>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-paper-plane"></i> Enviar Mensagem
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer class="bg-black py-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="text-light mb-0">&copy; 2024 System of a Down - Experiência Interativa</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="social-links">
+            <a href="#" class="text-danger me-3"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-danger me-3"><i class="fab fa-spotify"></i></a>
+            <a href="#" class="text-danger me-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-danger"><i class="fab fa-facebook"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom JavaScript -->
+  <script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/audio-visualization.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
